@@ -1,0 +1,12 @@
+<h1>{{title}}</h1>
+
+<p>Order Total: ₪{{order.totalAmount}}</p>
+<p>Paid: {{#if order.isPaid}}✅ Already Paid{{else}}❌ Not Paid{{/if}}</p>
+
+{{#unless order.isPaid}}
+  <form action="/api/v1/payments/{{order._id}}" method="POST">
+    <button type="submit" class="btn btn-success">Pay Now 💳</button>
+  </form>
+{{else}}
+  <p>Thank you for your payment!</p>
+{{/unless}}

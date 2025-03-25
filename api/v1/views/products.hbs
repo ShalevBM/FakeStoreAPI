@@ -1,0 +1,40 @@
+{{!-- views/products.hbs --}}
+
+<div class="jumbotron text-center">
+  <h1 class="display-3">Chill & Chic - Products</h1>
+  <p class="lead">Browse our stylish collection and add items to your cart.</p>
+</div>
+
+<div class="container">
+  <div class="row">
+    {{#each products}}
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+          <img src="{{this.imageUrl}}" class="card-img-top" alt="{{this.name}}">
+          <div class="card-body">
+            <h5 class="card-title">{{this.name}}</h5>
+            <p class="card-text">₪{{this.price}}</p>
+            <p class="card-text"><strong>Size:</strong> {{this.size}}</p>
+            <p class="card-text"><strong>Category:</strong> {{this.category}}</p>
+            {{#if this.inStock}}
+              <form action="/cart/add" method="POST">
+                <input type="hidden" name="productId" value="{{this._id}}">
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="btn btn-primary btn-block">Add to Cart 🛒</button>
+              </form>
+            {{else}}
+              <p class="text-danger">Out of Stock</p>
+            {{/if}}
+          </div>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+</div>
+
+<style>
+  .card-img-top {
+    height: 300px;
+    object-fit: cover;
+  }
+</style>

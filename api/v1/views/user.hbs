@@ -1,0 +1,15 @@
+<h1>All Users</h1>
+<table>
+  <tr>
+    <th>Username</th>
+    <th>Email</th>
+    <th>Created At</th>
+  </tr>
+  {{#each users}} <!-- ← לולאה על רשימת המשתמשים -->
+  <tr>
+    <td>{{this.username}}</td>
+    <td>{{this.email}}</td>
+    <td>{{this.createdAt}}</td>
+  </tr>
+  {{/each}}
+</table>

@@ -1,0 +1,17 @@
+<h1>{{title}}</h1>
+
+<div class="row">
+  {{#each product}}
+    <div class="col-md-4 mb-3">
+      <div class="card shadow">
+        <img src="{{this.imageUrl}}" class="card-img-top" alt="{{this.name}}">
+        <div class="card-body">
+          <h5 class="card-title">{{this.name}}</h5>
+          <p class="card-text">₪{{this.price}}</p>
+          <p>Size: {{this.size}}</p>
+          {{#if this.inStock}}<p class="text-success">In Stock</p>{{else}}<p class="text-danger">Out of Stock</p>{{/if}}
+        </div>
+      </div>
+    </div>
+  {{/each}}
+</div>

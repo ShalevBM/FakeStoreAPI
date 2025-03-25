@@ -1,0 +1,41 @@
+<div class="container mt-5">
+  <h2 class="text-center mb-4">🛒 Your Cart</h2>
+
+  {{#if cart.items.length}}
+    <table class="table table-striped">
+      <thead class="thead-dark">
+        <tr>
+          <th>Product</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Total</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each cart.items}}
+        <tr>
+          <td>{{this.productId.name}}</td>
+          <td>{{this.quantity}}</td>
+          <td>₪{{this.productId.price}}</td>
+          <td>₪{{multiply this.quantity this.productId.price}}</td>
+          <td>
+            <form method="POST" action="/cart/remove/{{this.productId._id}}">
+              <button class="btn btn-danger btn-sm">Remove</button>
+            </form>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+
+    <div class="text-right">
+      <h4>Total: ₪{{cart.totalAmount}}</h4>
+      <form method="POST" action="/orders/create">
+        <button class="btn btn-success">Checkout</button>
+      </form>
+    </div>
+  {{else}}
+    <div class="alert alert-info text-center">Your cart is empty.</div>
+  {{/if}}
+</div>
