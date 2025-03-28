@@ -37,12 +37,12 @@ mongoose.connect(process.env.MONGO_URI)
   app.use(cookieParser());
   
 // ראוטים API
-app.use('/api/v1/products', require('./api/v1/routes/product'));
+app.use('/api/v1/product', require('./api/v1/routes/product'));
 app.use('/user', require('./api/v1/routes/user'));
 app.use('/cart', require('./api/v1/routes/cart'));
-app.use('/api/v1/orders', require('./api/v1/routes/order'));
-app.use('/api/v1/categories', require('./api/v1/routes/category'));
-app.use('/payments', require('./api/v1/routes/payment'));
+app.use('/api/v1/order', require('./api/v1/routes/order'));
+app.use('/api/v1/categorie', require('./api/v1/routes/category'));
+app.use('/payment', require('./api/v1/routes/payment'));
 
 // ראוטים לתצוגות
 app.use('/', require('./api/v1/routes/view'));

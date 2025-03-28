@@ -12,4 +12,4 @@ const productSchema = new mongoose.Schema({
 });
 
 // ייצוא המודל – לשימוש ב־controllers, views, סל קניות ועוד
-module.exports = mongoose.model('Product', productSchema);
+module.exports = mongoose.model('product', productSchema);

@@ -6,9 +6,9 @@ const addToCart = async (req, res) => {
     const userId = req.user.userId; // מזהה את המשתמש המחובר מתוך הטוקן
     const { productId, quantity } = req.body; // שולף את מזהה המוצר והכמות מתוך הבקשה
 
-    let cart = await Cart.findOne({ userId }); // בודק אם קיימת עגלה למשתמש
+    let cart = await cart.findOne({ userId }); // בודק אם קיימת עגלה למשתמש
 
-    if (cart) {
+    if (Cart) {
       // אם העגלה קיימת – בדוק אם המוצר כבר בעגלה
       const item = cart.items.find(i => i.productId.toString() === productId);
       if (item) {

@@ -64,7 +64,7 @@ const getUserById = async (req, res) => {
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.find(); // שליפת כל המשתמשים
-    res.render('users', {
+    res.render('user', {
       title: 'All Users',
       users
     }); // הצגת רשימת המשתמשים

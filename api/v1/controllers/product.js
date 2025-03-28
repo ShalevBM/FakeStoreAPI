@@ -4,35 +4,35 @@ const Product = require('../models/product'); // טוען את מודל המוצ
 const getAllProducts = async (req, res) => {
   try {
     const products = await Product.find(); // שליפת כל המוצרים מהמסד
-    res.render('products', { // הצגת המוצרים בדף HTML
+    res.render('product', { // הצגת המוצרים בדף HTML
       title: 'All Products', // כותרת לעמוד
       products // שליחת המוצרים לתצוגה
     });
   } catch (err) {
-    console.error('Error getting products:', err); // הדפסת שגיאה ל־console
-    res.status(500).send('Failed to fetch products'); // החזרת שגיאה למשתמש
+    console.error('Error getting products:', err);
+    res.status(500).send('Failed to fetch products');
   }
 };
 
 // קבלת מוצר לפי ID
 const getProductById = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id); // שליפת מוצר לפי מזהה מהכתובת
-    if (!product) return res.status(404).send('Product not found'); // אם לא נמצא – החזר שגיאה
-    res.render('productDetails', { // הצגת דף מוצר
-      title: product.name, // כותרת דינמית
-      product // שליחת פרטי המוצר לתצוגה
+    const product = await Product.findById(req.params.id); // שליפת מוצר לפי מזהה
+    if (!product) return res.status(404).send('Product not found');
+    res.render('product', { // מציג דף מוצר יחיד
+      title: product.name,
+      product
     });
   } catch (err) {
-    console.error('Error getting product by ID:', err.message); // הדפסת שגיאה
-    res.status(500).send('Failed to fetch product'); // שגיאה למשתמש
+    console.error('Error getting product by ID:', err.message);
+    res.status(500).send('Failed to fetch product');
   }
 };
 
 // יצירת מוצר חדש
 const createProduct = async (req, res) => {
   try {
-    const { name, price, size, category, imageUrl, inStock } = req.body; // שליפת שדות מהממשק
+    const { name, price, size, category, imageUrl, inStock } = req.body;
 
     const newProduct = new Product({
       name,
@@ -43,11 +43,11 @@ const createProduct = async (req, res) => {
       inStock
     });
 
-    await newProduct.save(); // שמירה במסד הנתונים
-    res.redirect('/products'); // הפניה לעמוד המוצרים
+    await newProduct.save();
+    res.redirect('/product/view/all'); // הפניה לרשימת המוצרים
   } catch (err) {
-    console.error('Error creating product:', err); // הדפסת שגיאה
-    res.status(500).send('Failed to create product'); // שגיאה למשתמש
+    console.error('Error creating product:', err);
+    res.status(500).send('Failed to create product');
   }
 };
 
@@ -57,32 +57,32 @@ const updateProduct = async (req, res) => {
     const updated = await Product.findByIdAndUpdate(
       req.params.id,
       req.body,
-      { new: true } // החזרת המוצר לאחר עדכון
+      { new: true }
     );
-    if (!updated) return res.status(404).send('Product not found'); // אם לא נמצא – שגיאה
-    res.redirect('/products'); // הפניה חזרה לעמוד המוצרים
+    if (!updated) return res.status(404).send('Product not found');
+    res.redirect('/product/view/all'); // הפניה לרשימת המוצרים
   } catch (err) {
-    console.error('Error updating product:', err.message); // הדפסת שגיאה
-    res.status(500).send('Failed to update product'); // שגיאה למשתמש
+    console.error('Error updating product:', err.message);
+    res.status(500).send('Failed to update product');
   }
 };
 
 // מחיקת מוצר לפי ID
 const deleteProduct = async (req, res) => {
   try {
-    const deleted = await Product.findByIdAndDelete(req.params.id); // מחיקת מוצר מהמסד
-    if (!deleted) return res.status(404).send('Product not found'); // אם לא נמצא – שגיאה
-    res.redirect('/products'); // הפניה לעמוד המוצרים
+    const deleted = await Product.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).send('Product not found');
+    res.redirect('/product/view/all'); // הפניה לרשימת המוצרים
   } catch (err) {
-    console.error('Error deleting product:', err.message); // הדפסת שגיאה
-    res.status(500).send('Failed to delete product'); // שגיאה למשתמש
+    console.error('Error deleting product:', err.message);
+    res.status(500).send('Failed to delete product');
   }
 };
 
 module.exports = {
-  getAllProducts, // ייצוא פונקציית שליפת כל המוצרים
-  getProductById, // ייצוא פונקציית שליפת מוצר לפי ID
-  createProduct, // ייצוא פונקציית יצירת מוצר
-  updateProduct, // ייצוא פונקציית עדכון מוצר
-  deleteProduct // ייצוא פונקציית מחיקת מוצר
+  getAllProducts,
+  getProductById,
+  createProduct,
+  updateProduct,
+  deleteProduct
 };
