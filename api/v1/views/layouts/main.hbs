@@ -21,23 +21,30 @@
 
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ml-auto">
-          <li class="nav-item"><a class="nav-link" href="/product">Products</a></li>
+          <li class="nav-item">
+            <a class="nav-link" href="/product">Products</a>
+          </li>
+
           <li class="nav-item">
             <a class="nav-link" href="/cart">Cart 🛒 
-              <span class="badge badge-light" id="cart-count">{{cartCount}}</span>
+              <span class="badge badge-light" id="cart-count">{{cartItemCount}}</span>
             </a>
           </li>
 
           {{#if user}}
             <li class="nav-item">
-              <span class="nav-link">Hello, {{user.email}}</span>
+              <span class="nav-link">Hello, {{user.username}}</span>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/user/logout">Logout</a>
             </li>
           {{else}}
-            <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-            <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+            <li class="nav-item">
+              <a class="nav-link" href="/login">Login</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/register">Register</a>
+            </li>
           {{/if}}
         </ul>
       </div>
@@ -54,14 +61,9 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 </body>
 
-<footer>
+<footer class="text-center mt-4 mb-2">
   <div class="container">
     <p class="mb-0">&copy; 2024 Chill & Chic. All rights reserved.</p>
   </div>
-  <a class="nav-link" href="/cart">Cart 🛒 
-  <span class="badge badge-light" id="cart-count">{{cartCount}}</span>
-</a>
-
-
 </footer>
 </html>

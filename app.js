@@ -18,6 +18,8 @@ const cartItemCount = require('./api/v1/middlewares/cartCount');
 app.use(cartItemCount);
 
 
+
+
 // Middleware שמכניס את המשתמש ל־res.locals
 app.use((req, res, next) => {
   const token = req.cookies.token;
