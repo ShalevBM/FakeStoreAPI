@@ -6,33 +6,25 @@ const {
   getProductById,
   updateProduct,
   deleteProduct
-} = require('../controllers/product'); // טוען את כל הפונקציות מה-controller
-const Product = require('../models/product'); // טוען את מודל product
+} = require('../controllers/product');
+const Product = require('../models/product');
 
-// API – שליפת כל המוצרים בפורמט JSON
-router.get('/', getAllProducts);
+// 🔹 API Routes
+router.get('/api', getAllProducts);
+router.get('/api/:id', getProductById);
+router.post('/api', createProduct);
+router.put('/api/:id', updateProduct);
+router.delete('/api/:id', deleteProduct);
 
-// API – שליפת מוצר בודד לפי ID (JSON)
-router.get('/:id', getProductById);
-
-// API – יצירת מוצר חדש בפורמט JSON
-router.post('/', createProduct);
-
-// API – עדכון מוצר לפי ID (JSON)
-router.put('/:id', updateProduct);
-
-// API – מחיקת מוצר לפי ID (JSON)
-router.delete('/:id', deleteProduct);
-
-// HTML – הצגת כל המוצרים עם Handlebars (view)
-router.get('/view/all', async (req, res) => {
+// 🔹 HTML View Route (Handlebars)
+router.get('/', async (req, res) => {
   try {
-    const products = await Product.find(); // שליפת כל המוצרים מה־DB
-    res.render('product', { title: 'All Products', products }); // הצגת המוצרים ב־product.hbs
+    const products = await Product.find();
+    res.render('product', { title: 'All Products', products });
   } catch (err) {
-    console.error('Error rendering products:', err.message);
+    console.error('Error rendering products page:', err.message);
     res.status(500).send('Failed to load products page');
   }
-});
+}); 
 
 module.exports = router;

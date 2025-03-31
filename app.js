@@ -3,53 +3,48 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const exphbs = require('express-handlebars');
 const path = require('path');
-
-
-
-
+const cookieParser = require('cookie-parser');
 
 dotenv.config();
 
 const app = express();
 
-// Middleware לקריאת נתוני טופס ו־JSON
+// Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cookieParser());
 
-// קביעת Handlebars
+// Handlebars
 app.engine('hbs', exphbs.engine({
   extname: 'hbs',
   defaultLayout: 'main',
-  layoutsDir: path.join(__dirname, 'api', 'v1', 'views', 'layouts'),   // ← תיקון כאן
-  partialsDir: path.join(__dirname, 'api', 'v1', 'views', 'partials')  // ← תיקון כאן
+  layoutsDir: path.join(__dirname, 'api', 'v1', 'views', 'layouts'),
+  partialsDir: path.join(__dirname, 'api', 'v1', 'views', 'partials')
 }));
 app.set('view engine', 'hbs');
-app.set('views', path.join(__dirname, 'api', 'v1', 'views')); // תיקייה של כל ה־views
+app.set('views', path.join(__dirname, 'api', 'v1', 'views'));
 
-// קבצים סטטיים
+// Static Files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// חיבור ל־MongoDB
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('✅ MongoDB connected'))
-  .catch(err => console.error('❌ MongoDB connection error:', err));
-  const cookieParser = require('cookie-parser');
-  app.use(cookieParser());
-  
-// ראוטים API
-app.use('/api/v1/product', require('./api/v1/routes/product'));
+// MongoDB
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log('✅ MongoDB connected'))
+.catch(err => console.error('❌ MongoDB connection error:', err));
+
+// API Routes
+app.use('/product', require('./api/v1/routes/product'));
 app.use('/user', require('./api/v1/routes/user'));
 app.use('/cart', require('./api/v1/routes/cart'));
-app.use('/api/v1/order', require('./api/v1/routes/order'));
-app.use('/api/v1/categorie', require('./api/v1/routes/category'));
+app.use('/order', require('./api/v1/routes/order'));
+app.use('category', require('./api/v1/routes/category'));
 app.use('/payment', require('./api/v1/routes/payment'));
 
-// ראוטים לתצוגות
-app.use('/', require('./api/v1/routes/view'));
+// View Routes
 const viewRoutes = require('./api/v1/routes/view');
 app.use('/', viewRoutes);
 
-
-
-// ייצוא
 module.exports = app;
