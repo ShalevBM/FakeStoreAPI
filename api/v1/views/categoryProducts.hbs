@@ -1,54 +1,28 @@
 <div class="jumbotron text-center">
-  <h1 class="display-3">Chill & Chic - Products</h1>
-  <p class="lead">Browse our stylish collection and add items to your cart.</p>
+  <h1 class="display-4">{{categoryName}} Collection</h1>
+  <p class="lead">All products from {{categoryName}} category</p>
 </div>
 
 <div class="container my-5">
-
-  {{!-- לולאה על כל הקטגוריות --}}
-  {{#each categories}}
-    <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
-      <h3 class="mb-0">{{this.category}}</h3>
-      <a href="/product/category/{{this.category}}" class="btn btn-outline-primary btn-sm">See All →</a>
-    </div>
-
-    <div class="category-slider d-flex overflow-auto pb-3">
-      {{#each this.products}}
-        <div class="card mr-3 product-card">
-          <img src="{{this.imageUrl}}" class="card-img-top" alt="{{this.name}}">
+  <div class="row">
+    {{#each products}}
+      <div class="col-md-3 mb-4">
+        <div class="card h-100 shadow-sm">
+          <img src="{{this.imageUrl}}" class="card-img-top" alt="{{this.name}}" style="height: 200px; object-fit: cover;">
           <div class="card-body d-flex flex-column justify-content-between">
             <h5 class="card-title">{{this.name}}</h5>
-            <p>₪{{this.price}}</p>
+            <p class="card-text fw-bold">₪{{this.price}}</p>
             <form class="add-to-cart-form">
               <input type="hidden" name="productId" value="{{this._id}}">
               <input type="hidden" name="quantity" value="1">
-              <button type="submit" class="btn btn-sm btn-primary">Add to Cart 🛒</button>
+              <button type="submit" class="btn btn-primary btn-sm">Add to Cart 🛒</button>
             </form>
           </div>
         </div>
-      {{/each}}
-    </div>
-  {{/each}}
-
+      </div>
+    {{/each}}
+  </div>
 </div>
-
-<style>
-  .category-slider {
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-  }
-  .category-slider .product-card {
-    flex: 0 0 32%; /* בדיוק 3 מוצרים למסך */
-    scroll-snap-align: start;
-  }
-  .category-slider::-webkit-scrollbar {
-    display: none;
-  }
-  .product-card img {
-    height: 200px;
-    object-fit: cover;
-  }
-</style>
 
 <script>
   document.querySelectorAll('.add-to-cart-form').forEach(form => {

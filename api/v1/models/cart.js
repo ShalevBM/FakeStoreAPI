@@ -1,29 +1,33 @@
-const mongoose = require('mongoose'); // טוען את ספריית Mongoose לעבודה מול MongoDB
+// 📄 models/cart.js
 
-// יצירת סכימת העגלה (Cart Schema)
+// טעינת ספריית Mongoose לעבודה מול MongoDB
+const mongoose = require('mongoose');
+
+// ✅ יצירת סכימת עגלה (Cart Schema)
 const cartSchema = new mongoose.Schema({
-  userId: { 
-    type: mongoose.Schema.Types.ObjectId, // מזהה ייחודי של המשתמש (ObjectId)
-    ref: 'user', // קשר ל־collection בשם 'User' (מפתח זר)
-    required: true // חובה – כל עגלה חייבת להיות שייכת למשתמש
+  userId: {
+    type: mongoose.Schema.Types.ObjectId, // מזהה המשתמש
+    ref: 'user', // קשר לטבלת המשתמשים
+    required: true // חובה – כל עגלה קשורה למשתמש
   },
-  items: [ // מערך של מוצרים בעגלה
+  items: [
     {
-      productId: { 
-        type: mongoose.Schema.Types.ObjectId, // מזהה ייחודי של מוצר
-        ref: 'product' // קשר ל־collection בשם 'Product' (מפתח זר)
+      productId: {
+        type: mongoose.Schema.Types.ObjectId, // מזהה המוצר
+        ref: 'product' // קשר לטבלת המוצרים
       },
-      quantity: { 
-        type: Number, // כמות מהמוצר בעגלה
-        default: 1 // ברירת מחדל: 1 יחידה
+      quantity: {
+        type: Number, // כמות
+        default: 1, // ברירת מחדל
+        min: [1, 'Quantity cannot be less than 1'] // ולידציה
       }
     }
   ],
-  createdAt: { 
-    type: Date, // תאריך יצירת העגלה
-    default: Date.now // ברירת מחדל: התאריך הנוכחי
+  createdAt: {
+    type: Date, // תאריך יצירה
+    default: Date.now
   }
 });
 
-// ייצוא המודל Cart – לשימוש בכל האפליקציה (controllers וכו')
+// ייצוא המודל Cart לשימוש בכלל המערכת
 module.exports = mongoose.model('cart', cartSchema);

@@ -1,108 +1,112 @@
-const User = require('../models/user'); // טוען את מודל המשתמשים ממסד הנתונים
-const bcrypt = require('bcrypt'); // לצורך הצפנת סיסמאות
-const jwt = require('jsonwebtoken'); // ליצירת טוקן JWT
-require('dotenv').config(); // טוען משתני סביבה מ־.env
+// 📄 controllers/user.js
 
-// הרשמה עם הצפנת סיסמה
+const User = require('../models/user'); // טעינת מודל המשתמשים
+const bcrypt = require('bcrypt'); // להצפנת סיסמאות
+const jwt = require('jsonwebtoken'); // יצירת JWT Token
+require('dotenv').config(); // טעינת משתני סביבה
+
+// ➕ הרשמה
 const registerUser = async (req, res) => {
   try {
-    const { username, email, password } = req.body; // שליפת פרטי משתמש מהטופס
+    const { username, email, password } = req.body;
 
-    const existingUser = await User.findOne({ email }); // בדיקה אם האימייל כבר קיים במסד
-    if (existingUser) return res.status(400).send('Email already registered'); // שגיאה אם קיים
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(400).send('Email already registered');
 
-    const hashedPassword = await bcrypt.hash(password, 10); // הצפנת סיסמה
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = new User({ username, email, password: hashedPassword }); // יצירת משתמש חדש
-    await newUser.save(); // שמירה במסד הנתונים
+    const newUser = new User({ username, email, password: hashedPassword });
+    await newUser.save();
 
-    res.redirect('/login'); // הפניה לעמוד התחברות אחרי הרשמה
+    res.redirect('/login');
   } catch (err) {
-    console.error('Registration error:', err.message); // הדפסת שגיאה
-    res.status(500).send('Registration failed'); // שגיאה למשתמש
+    console.error('Registration error:', err.message);
+    res.status(500).send('Registration failed');
   }
 };
 
-// התחברות עם בדיקת סיסמה ויצירת טוקן JWT
+// 🔐 התחברות
 const loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body; // שליפת אימייל וסיסמה מהטופס
+    const { email, password } = req.body;
 
-    const user = await User.findOne({ email }); // שליפת המשתמש לפי אימייל
-    if (!user) return res.status(401).render('login', { error: 'Invalid Email' }); // אם לא נמצא – שגיאה
+    const user = await User.findOne({ email });
+    if (!user) return res.status(401).render('login', { error: 'Invalid Email' });
 
-    const isMatch = await bcrypt.compare(password, user.password); // בדיקת סיסמה
-    if (!isMatch) return res.status(401).render('login', { error: 'Invalid Password' }); // סיסמה לא נכונה
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(401).render('login', { error: 'Invalid Password' });
 
-    const token = jwt.sign( // יצירת טוקן חתום
+    const token = jwt.sign(
       { userId: user._id, email: user.email },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRE }
     );
 
     res.cookie('token', token, { httpOnly: true }).redirect('/product');
-
   } catch (err) {
-    console.error('Login error:', err.message); // הדפסת שגיאה
-    res.status(500).send('Login failed'); // שגיאה למשתמש
+    console.error('Login error:', err.message);
+    res.status(500).send('Login failed');
   }
 };
 
-// שליפת משתמש לפי ID
+// 👤 שליפת משתמש לפי מזהה
 const getUserById = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id); // שליפת משתמש לפי מזהה
-    if (!user) return res.status(404).send('User not found'); // אם לא נמצא – שגיאה
-    res.render('user', { user }); // הצגת פרטי המשתמש בדף HTML
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).send('User not found');
+
+    res.render('user', { user });
   } catch (err) {
-    console.error('Fetch user error:', err.message); // הדפסת שגיאה
-    res.status(500).send('Failed to get user'); // שגיאה למשתמש
+    console.error('Fetch user error:', err.message);
+    res.status(500).send('Failed to get user');
   }
 };
 
-// שליפת כל המשתמשים
+// 👥 שליפת כל המשתמשים
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find(); // שליפת כל המשתמשים
+    const users = await User.find();
     res.render('user', {
       title: 'All Users',
       users
-    }); // הצגת רשימת המשתמשים
+    });
   } catch (err) {
-    console.error('Fetch users error:', err.message); // הדפסת שגיאה
-    res.status(500).send('Failed to get users'); // שגיאה למשתמש
+    console.error('Fetch users error:', err.message);
+    res.status(500).send('Failed to get users');
   }
 };
 
-// עדכון משתמש לפי מזהה
+// ✏️ עדכון משתמש
 const updateUser = async (req, res) => {
   try {
-    const updated = await User.findByIdAndUpdate(req.params.id, req.body, { new: true }); // עדכון נתונים
-    if (!updated) return res.status(404).send('User not found'); // אם לא נמצא – שגיאה
-    res.redirect('/users'); // הפניה חזרה לעמוד המשתמשים
+    const updated = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updated) return res.status(404).send('User not found');
+
+    res.redirect('/users');
   } catch (err) {
-    console.error('Update error:', err.message); // הדפסת שגיאה
-    res.status(500).send('Failed to update user'); // שגיאה למשתמש
+    console.error('Update error:', err.message);
+    res.status(500).send('Failed to update user');
   }
 };
 
-// מחיקת משתמש
+// ❌ מחיקת משתמש
 const deleteUser = async (req, res) => {
   try {
-    const deleted = await User.findByIdAndDelete(req.params.id); // מחיקת משתמש
-    if (!deleted) return res.status(404).send('User not found'); // אם לא נמצא – שגיאה
-    res.redirect('/users'); // הפניה לעמוד המשתמשים
+    const deleted = await User.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).send('User not found');
+
+    res.redirect('/users');
   } catch (err) {
-    console.error('Delete error:', err.message); // הדפסת שגיאה
-    res.status(500).send('Failed to delete user'); // שגיאה למשתמש
+    console.error('Delete error:', err.message);
+    res.status(500).send('Failed to delete user');
   }
 };
 
 module.exports = {
-  registerUser, // ייצוא פונקציית הרשמה
-  loginUser, // ייצוא פונקציית התחברות
-  getUserById, // ייצוא שליפת משתמש לפי מזהה
-  getAllUsers, // ייצוא שליפת כל המשתמשים
-  updateUser, // ייצוא עדכון משתמש
-  deleteUser // ייצוא מחיקת משתמש
+  registerUser,
+  loginUser,
+  getUserById,
+  getAllUsers,
+  updateUser,
+  deleteUser
 };

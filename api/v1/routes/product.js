@@ -1,30 +1,32 @@
+// 📄 routes/product.js
+
 const express = require('express');
 const router = express.Router();
+
+// ייבוא הפונקציות מה־controller
 const {
   getAllProducts,
-  createProduct,
+  getProductsByCategory,
   getProductById,
+  createProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  getProductsByCategoryName
 } = require('../controllers/product');
-const Product = require('../models/product');
 
-// 🔹 API Routes
-router.get('/api', getAllProducts);
-router.get('/api/:id', getProductById);
-router.post('/api', createProduct);
-router.put('/api/:id', updateProduct);
-router.delete('/api/:id', deleteProduct);
+// ✅ 🔹 API Routes (ל־Postman או Frontend)
+router.get('/api', getAllProducts); // שליפת כל המוצרים
+router.get('/api/:id', getProductById); // מוצר לפי מזהה
+router.post('/api', createProduct); // יצירת מוצר
+router.put('/api/:id', updateProduct); // עדכון מוצר
+router.delete('/api/:id', deleteProduct); // מחיקת מוצר
 
-// 🔹 HTML View Route (Handlebars)
-router.get('/', async (req, res) => {
-  try {
-    const products = await Product.find();
-    res.render('product', { title: 'All Products', products });
-  } catch (err) {
-    console.error('Error rendering products page:', err.message);
-    res.status(500).send('Failed to load products page');
-  }
-}); 
+// ✅ 🔹 View Routes (Handlebars)
+
+// 🔥 דף מוצרים ראשי – מוצרים לפי קטגוריה + Scroll
+router.get('/', getProductsByCategory);
+
+// 👇 דף מוצרים של קטגוריה מסוימת
+router.get('/category/:categoryName', getProductsByCategoryName);
 
 module.exports = router;

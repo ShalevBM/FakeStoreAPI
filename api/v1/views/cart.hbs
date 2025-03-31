@@ -1,3 +1,5 @@
+{{!-- 📄 views/cart.hbs --}}
+
 <div class="container mt-5">
   <h2 class="text-center mb-4">🛒 Your Cart</h2>
 
@@ -31,10 +33,12 @@
 
     <div class="text-right">
       <h4>Total: ₪{{totalPrice}}</h4>
-      <form method="POST" action="/cart/clear">
+
+      <form method="POST" action="/cart/clear" class="d-inline">
         <button class="btn btn-warning">Clear Cart</button>
       </form>
-      <form method="POST" action="/orders/create">
+
+      <form method="POST" action="/orders/create" class="d-inline">
         <button class="btn btn-success">Checkout</button>
       </form>
     </div>
@@ -42,3 +46,15 @@
     <div class="alert alert-info text-center">Your cart is empty.</div>
   {{/if}}
 </div>
+
+<style>
+  table {
+    background-color: #fff;
+  }
+  th, td {
+    vertical-align: middle;
+  }
+  .btn {
+    margin: 2px;
+  }
+</style>

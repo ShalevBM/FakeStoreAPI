@@ -1,26 +1,31 @@
+// 📄 routes/category.js
+
 const express = require('express');
-const router = express.Router();
-const authenticateToken = require('../middlewares/auth');
+const router = express.Router(); // יצירת ראוטר
+
+const authenticateToken = require('../middlewares/auth'); 
+// Middleware לבדיקה אם המשתמש מחובר
+
 const {
   createCategory,
   getAllCategories,
   updateCategory,
   deleteCategory
-} = require('../controllers/category');
+} = require('../controllers/category'); // טעינת פעולות הקטגוריה
 
 // 🔹 נתיבי API (JSON)
-router.post('/', authenticateToken, createCategory);
-router.get('/', getAllCategories);
-router.put('/:id', authenticateToken, updateCategory);
-router.delete('/:id', authenticateToken, deleteCategory);
+router.post('/', authenticateToken, createCategory); // יצירת קטגוריה
+router.get('/', getAllCategories); // שליפת כל הקטגוריות
+router.put('/:id', authenticateToken, updateCategory); // עדכון קטגוריה
+router.delete('/:id', authenticateToken, deleteCategory); // מחיקת קטגוריה
 
-// 🔹 נתיב HTML ל־Handlebars – מציג את כל הקטגוריות בדף רגיל
+// 🔹 תצוגה ב־HTML דרך Handlebars
 router.get('/view/all', async (req, res) => {
   try {
-    const Category = require('../models/category'); // טוען את המודל
-    const categories = await Category.find(); // מביא את כל הקטגוריות
-    res.render('categories', { title: 'All Categories', categories }); 
-    // מציג את הדף views/categories.hbs עם הנתונים
+    const Category = require('../models/category');
+    const categories = await Category.find();
+
+    res.render('categories', { title: 'All Categories', categories });
   } catch (err) {
     console.error('Error rendering categories:', err.message);
     res.status(500).send('Failed to render categories');

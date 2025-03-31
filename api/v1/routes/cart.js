@@ -1,26 +1,30 @@
-const express = require('express'); 
-const router = express.Router(); 
-// יוצר ראוטר עצמאי לעגלה
+const express = require('express');
+const router = express.Router(); // ראוטר עצמאי לעגלה
 
 const authenticateToken = require('../middlewares/auth'); 
-// Middleware – בודק JWT (רק משתמש מחובר יוכל לגשת לעגלה)
+// Middleware – בודק JWT
 
-const { addToCart, getCart, removeItem, clearCart } = require('../controllers/cart'); 
-// מייבא את כל הפעולות לעגלה מה־controller
+const { 
+  addToCart, 
+  getCart, 
+  removeItem, 
+  clearCart,
+  addToCartAPI // ✅ פונקציה חדשה ל־AJAX
+} = require('../controllers/cart'); 
 
-// ➕ הוספת מוצר לעגלה
-router.post('/add', authenticateToken, addToCart); 
-// דוגמה: POST ל־/api/v1/cart/add עם productId + quantity
+// ➕ הוספת מוצר לעגלה רגילה (redirect)
+router.post('/add', authenticateToken, addToCart);
 
-// 👀 שליפת עגלה מלאה
-router.get('/', authenticateToken, getCart); 
-// דוגמה: GET ל־/api/v1/cart → מחזיר JSON כרגע
+// ➕ הוספת מוצר לעגלה דרך API (AJAX)
+router.post('/api/add', authenticateToken, addToCartAPI);
 
-// ❌ הסרת מוצר מסוים לפי productId
-router.delete('/remove/:productId', authenticateToken, removeItem); 
+// 👀 שליפת עגלה
+router.get('/', authenticateToken, getCart);
+
+// ❌ הסרת מוצר לפי productId
+router.post('/remove/:productId', authenticateToken, removeItem); 
 
 // 🗑️ ריקון כל העגלה
-router.delete('/clear', authenticateToken, clearCart); 
+router.post('/clear', authenticateToken, clearCart);
 
-module.exports = router; 
-// ייצוא הראוטר לשימוש ב־app.js
+module.exports = router;

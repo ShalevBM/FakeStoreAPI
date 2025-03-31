@@ -1,27 +1,29 @@
+// 📄 models/user.js
+
 const mongoose = require('mongoose'); 
-// טוען את Mongoose – לעבודה עם MongoDB והגדרת סכימות
+// טעינת Mongoose – לעבודה עם MongoDB והגדרת סכימות
 
 // יצירת סכימת משתמשים (User Schema)
 const userSchema = new mongoose.Schema({
   username: { 
-    type: String,          // שם משתמש (לוגאין)
-    required: true,        // חובה – לא ניתן להירשם בלי שם משתמש
-    unique: true           // ייחודי – לא ניתן שניים עם אותו שם
+    type: String,          // שם משתמש
+    required: true,        // חובה
+    unique: true           // ייחודי
   },
   email: { 
     type: String,          // כתובת אימייל
-    required: true,        // חובה להזין אימייל
-    unique: true           // ייחודי – למניעת כפילויות משתמשים
+    required: true,        // חובה
+    unique: true           // ייחודי
   },
   password: { 
     type: String,          // סיסמה מוצפנת
-    required: true         // חובה להזין סיסמה
+    required: true         // חובה
   },
   createdAt: { 
     type: Date,            // תאריך יצירת המשתמש
-    default: Date.now      // ברירת מחדל – תאריך נוכחי
+    default: Date.now
   }
 });
 
-// ייצוא המודל – שימוש ב־controllers להרשמה, התחברות, ניהול משתמשים
+// ייצוא המודל לשימוש ב־controllers ו־routes
 module.exports = mongoose.model('User', userSchema);

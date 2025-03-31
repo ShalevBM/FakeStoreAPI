@@ -1,15 +1,41 @@
-const mongoose = require('mongoose');
-// טעינת Mongoose – מאפשר להגדיר סכימות ולעבוד מול MongoDB
+// 📄 models/product.js
 
-// יצירת סכימה למוצר (Product Schema)
+// טעינת ספריית mongoose – מאפשרת עבודה עם MongoDB
+const mongoose = require('mongoose');
+
+// ✅ יצירת סכימה למוצר (Product Schema)
 const productSchema = new mongoose.Schema({
-  name: String,           // שם המוצר (לדוגמה: "חולצת גברים קלאסית")
-  price: Number,          // מחיר המוצר בשקלים
-  size: String,           // מידה (לדוגמה: S, M, L, XL)
-  category: String,       // קטגוריה (לדוגמה: "TShirts")
-  imageUrl: String,       // קישור לתמונה של המוצר (לתצוגה בפרונטאנד)
-  inStock: Boolean        // האם המוצר במלאי (true/false)
+  name: {
+    type: String, // שם המוצר (לדוגמה: "חולצת גברים קלאסית")
+    required: [true, 'יש להזין שם מוצר'], // חובה – לא ניתן לשמור מוצר בלי שם
+    trim: true // מסיר רווחים מיותרים בתחילת וסוף המחרוזת
+  },
+  price: {
+    type: Number, // מחיר המוצר
+    required: [true, 'יש להזין מחיר מוצר'], // חובה
+    min: [0, 'המחיר חייב להיות מספר חיובי'] // לא ניתן להזין מחיר שלילי
+  },
+  size: {
+    type: String, // מידה (S, M, L, XL)
+    required: [true, 'יש לבחור מידה']
+  },
+  category: {
+    type: String, // קטגוריה (למשל: TShirts)
+    required: [true, 'יש לבחור קטגוריה']
+  },
+  imageUrl: {
+    type: String, // קישור לתמונה של המוצר
+    required: [true, 'יש לספק כתובת תמונה']
+  },
+  inStock: {
+    type: Boolean, // האם המוצר במלאי
+    default: true // ברירת מחדל – במלאי
+  },
+  createdAt: {
+    type: Date, // תאריך יצירת המוצר
+    default: Date.now // ברירת מחדל – התאריך הנוכחי
+  }
 });
 
-// ייצוא המודל – לשימוש ב־controllers, views, סל קניות ועוד
+// ✅ ייצוא המודל – לשימוש ב־controllers, routes, סל קניות ועוד
 module.exports = mongoose.model('product', productSchema);

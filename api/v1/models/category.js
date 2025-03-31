@@ -1,19 +1,23 @@
+// 📄 models/category.js
+
 const mongoose = require('mongoose'); 
-// טעינת ספריית Mongoose לעבודה מול MongoDB – מאפשרת הגדרת סכימות ומודלים
+// טעינת ספריית Mongoose לעבודה מול MongoDB
 
 // יצירת סכימת קטגוריה (למשל: T-Shirts, Jeans)
 const categorySchema = new mongoose.Schema({
-  name: { 
-    type: String, // שם הקטגוריה (לדוג' 'T-Shirts')
-    required: true, // חובה – לא ניתן ליצור קטגוריה בלי שם
-    unique: true // כל שם חייב להיות ייחודי במסד (למניעת כפילויות)
+  name: {
+    type: String, // שם הקטגוריה
+    required: true, // חובה
+    unique: true // ייחודי – אין כפילויות
   },
-  description: String, // תיאור אופציונלי של הקטגוריה
-  createdAt: { 
+  description: {
+    type: String // תיאור אופציונלי
+  },
+  createdAt: {
     type: Date, // תאריך יצירת הקטגוריה
-    default: Date.now // ברירת מחדל – התאריך הנוכחי
+    default: Date.now
   }
 });
 
-// ייצוא המודל Category – כדי להשתמש בו בכל חלקי המערכת (controllers וכו')
+// ייצוא המודל Category
 module.exports = mongoose.model('Category', categorySchema);

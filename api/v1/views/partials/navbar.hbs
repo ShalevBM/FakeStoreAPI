@@ -1,7 +1,15 @@
-<nav>
-  <a href="/">Home</a>
-  <a href="/product">Products</a>
-  <a href="/cart">Cart</a>
-  <a href="/login">Login</a>
+<nav class="navbar navbar-dark bg-dark justify-content-between px-4">
+  <a class="navbar-brand" href="/">Chill & Chic</a>
+  <div>
+    <a class="nav-link d-inline text-white" href="/product">Products</a>
+    <a class="nav-link d-inline text-white" href="/cart">Cart</a>
+
+    {{#if user}}
+      <span class="text-white">Hello, {{user.email}}</span>
+      <a class="nav-link d-inline text-white" href="/user/logout">Logout</a>
+    {{else}}
+      <a class="nav-link d-inline text-white" href="/login">Login</a>
+      <a class="nav-link d-inline text-white" href="/register">Register</a>
+    {{/if}}
+  </div>
 </nav>
-<hr />

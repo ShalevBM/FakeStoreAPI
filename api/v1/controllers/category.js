@@ -1,63 +1,65 @@
-const Category = require('../models/category'); // טוען את המודל של קטגוריות ממסד הנתונים
+// 📄 controllers/category.js
 
-// יצירת קטגוריה חדשה
+const Category = require('../models/category'); // טעינת מודל הקטגוריה
+
+// ➕ יצירת קטגוריה חדשה
 const createCategory = async (req, res) => {
   try {
-    const { name, description } = req.body; // שליפת שם ותיאור הקטגוריה מהבקשה
+    const { name, description } = req.body; // שליפת נתונים מהבקשה
 
-    const exists = await Category.findOne({ name }); // בדיקה אם קטגוריה עם אותו שם כבר קיימת
-    if (exists) return res.status(400).send('Category already exists'); // אם קיימת – שלח הודעת שגיאה
+    const exists = await Category.findOne({ name }); // בדיקה אם הקטגוריה קיימת
+    if (exists) return res.status(400).send('Category already exists');
 
-    const newCategory = new Category({ name, description }); // יצירת אובייקט קטגוריה חדש
-    await newCategory.save(); // שמירה במסד
-    res.redirect('/categories'); // הפניה חזרה לעמוד הקטגוריות
+    const newCategory = new Category({ name, description });
+    await newCategory.save(); // שמירה במסד הנתונים
+
+    res.redirect('/categories/view/all'); // הפנייה חזרה לעמוד הקטגוריות
   } catch (err) {
-    console.error('Error creating category:', err.message); // הדפסת שגיאה ל־console
-    res.status(500).send('Failed to create category'); // החזרת שגיאה למשתמש
+    console.error('Error creating category:', err.message);
+    res.status(500).send('Failed to create category');
   }
 };
 
-// צפייה בכל הקטגוריות (HTML בלבד)
+// 👀 שליפת כל הקטגוריות (HTML)
 const getAllCategories = async (req, res) => {
   try {
     const categories = await Category.find(); // שליפת כל הקטגוריות
-    res.render('categories', {
-      title: 'All Categories', // כותרת לעמוד
-      categories // שליחת הקטגוריות לתצוגה
-    });
+    res.json(categories); // החזרת הנתונים כ־JSON
   } catch (err) {
-    console.error('Error fetching categories:', err.message); // הדפסת שגיאה
-    res.status(500).send('Failed to fetch categories'); // שגיאה למשתמש
+    console.error('Error fetching categories:', err.message);
+    res.status(500).send('Failed to fetch categories');
   }
 };
 
-// עדכון קטגוריה קיימת לפי מזהה
+// ✏️ עדכון קטגוריה קיימת לפי מזהה
 const updateCategory = async (req, res) => {
   try {
-    const updated = await Category.findByIdAndUpdate(req.params.id, req.body, { new: true }); // עדכון לפי ID
-    if (!updated) return res.status(404).send('Category not found'); // אם לא נמצא – שגיאה
-    res.redirect('/categories'); // הפניה חזרה לעמוד הקטגוריות
+    const updated = await Category.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updated) return res.status(404).send('Category not found');
+
+    res.redirect('/categories/view/all');
   } catch (err) {
-    console.error('Error updating category:', err.message); // הדפסת שגיאה
-    res.status(500).send('Failed to update category'); // שגיאה למשתמש
+    console.error('Error updating category:', err.message);
+    res.status(500).send('Failed to update category');
   }
 };
 
-// מחיקת קטגוריה לפי מזהה
+// ❌ מחיקת קטגוריה לפי מזהה
 const deleteCategory = async (req, res) => {
   try {
-    const deleted = await Category.findByIdAndDelete(req.params.id); // מחיקה לפי ID
-    if (!deleted) return res.status(404).send('Category not found'); // אם לא נמצא – שגיאה
-    res.redirect('/categories'); // הפניה לעמוד הקטגוריות
+    const deleted = await Category.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).send('Category not found');
+
+    res.redirect('/categories/view/all');
   } catch (err) {
-    console.error('Error deleting category:', err.message); // הדפסת שגיאה
-    res.status(500).send('Failed to delete category'); // שגיאה למשתמש
+    console.error('Error deleting category:', err.message);
+    res.status(500).send('Failed to delete category');
   }
 };
 
 module.exports = {
-  createCategory, // ייצוא פונקציית יצירת קטגוריה
-  getAllCategories, // ייצוא פונקציית שליפת כל הקטגוריות
-  updateCategory, // ייצוא פונקציית עדכון קטגוריה
-  deleteCategory // ייצוא פונקציית מחיקת קטגוריה
+  createCategory,
+  getAllCategories,
+  updateCategory,
+  deleteCategory
 };
