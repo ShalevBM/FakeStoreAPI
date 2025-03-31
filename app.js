@@ -4,6 +4,8 @@ const dotenv = require('dotenv');
 const exphbs = require('express-handlebars');
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const Handlebars = require('handlebars');
+
 
 dotenv.config();
 
@@ -13,6 +15,10 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
+
+Handlebars.registerHelper('multiply', function (a, b) {
+  return a * b;
+});
 
 // Handlebars
 app.engine('hbs', exphbs.engine({
@@ -47,6 +53,7 @@ app.use('/cart', require('./api/v1/routes/cart'));
 app.use('/order', require('./api/v1/routes/order'));
 app.use('category', require('./api/v1/routes/category'));
 app.use('/payment', require('./api/v1/routes/payment'));
+
 
 // View Routes
 const viewRoutes = require('./api/v1/routes/view');

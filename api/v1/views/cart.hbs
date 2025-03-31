@@ -1,7 +1,7 @@
 <div class="container mt-5">
   <h2 class="text-center mb-4">🛒 Your Cart</h2>
 
-  {{#if cart.items.length}}
+  {{#if items.length}}
     <table class="table table-striped">
       <thead class="thead-dark">
         <tr>
@@ -13,7 +13,7 @@
         </tr>
       </thead>
       <tbody>
-        {{#each cart.items}}
+        {{#each items}}
         <tr>
           <td>{{this.productId.name}}</td>
           <td>{{this.quantity}}</td>
@@ -30,7 +30,10 @@
     </table>
 
     <div class="text-right">
-      <h4>Total: ₪{{cart.totalAmount}}</h4>
+      <h4>Total: ₪{{totalPrice}}</h4>
+      <form method="POST" action="/cart/clear">
+        <button class="btn btn-warning">Clear Cart</button>
+      </form>
       <form method="POST" action="/orders/create">
         <button class="btn btn-success">Checkout</button>
       </form>

@@ -1,95 +1,90 @@
-const Cart = require('../models/cart'); // טוען את המודל של עגלת הקניות מהמסד
+const Cart = require('../models/cart');
+const Product = require('../models/product');
 
-// ➕ הוספת מוצר לעגלה
-const addToCart = async (req, res) => {
+exports.addToCart = async (req, res) => {
   try {
-    const userId = req.user.userId; // מזהה את המשתמש המחובר מתוך הטוקן
-    const { productId, quantity } = req.body; // שולף את מזהה המוצר והכמות מתוך הבקשה
+    const userId = req.user.userId;
+    const { productId, quantity } = req.body;
 
-    let cart = await Cart.findOne({ userId }); // בודק אם קיימת עגלה למשתמש
+    let cart = await Cart.findOne({ userId });
 
     if (cart) {
-      // אם העגלה קיימת – בדוק אם המוצר כבר בעגלה
       const item = cart.items.find(i => i.productId.toString() === productId);
       if (item) {
-        item.quantity += quantity; // אם קיים – עדכן כמות
+        item.quantity += quantity;
       } else {
-        cart.items.push({ productId, quantity }); // אם לא קיים – הוסף מוצר חדש לעגלה
+        cart.items.push({ productId, quantity });
       }
     } else {
-      // אם אין עגלה – צור חדשה
       cart = new Cart({
         userId,
         items: [{ productId, quantity }]
       });
     }
 
-    await cart.save(); // שמור את השינויים במסד הנתונים
-    res.redirect('/cart'); // העבר את המשתמש לעמוד העגלה
+    await cart.save();
+    res.redirect('/cart');
   } catch (err) {
-    console.error('Error adding to cart:', err.message); // הדפסת שגיאה ל־console
-    res.status(500).send('Failed to add to cart'); // החזרת שגיאה למשתמש
+    console.error('Error adding to cart:', err.message);
+    res.status(500).send('Failed to add to cart');
   }
 };
 
-// 👀 צפייה בעגלה (HTML בלבד)
-const getCart = async (req, res) => {
+exports.getCart = async (req, res) => {
   try {
-    const userId = req.user.userId; // מזהה את המשתמש המחובר
-    const cart = await Cart.findOne({ userId }).populate('items.productId'); // שליפת העגלה כולל פרטי המוצרים
+    const userId = req.user.userId;
+    const cart = await Cart.findOne({ userId }).populate('items.productId');
 
     if (!cart || cart.items.length === 0) {
-      // אם אין עגלה או שהיא ריקה – הצג הודעה מתאימה
       return res.render('cart', {
-        title: 'My Cart', // כותרת לעמוד
-        items: [], // רשימת מוצרים ריקה
-        totalPrice: 0, // סכום כולל אפס
-        message: '🛒 Your cart is empty!' // הודעת עגלה ריקה
+        title: 'My Cart',
+        items: [],
+        totalPrice: 0,
+        message: '🛒 Your cart is empty!'
       });
     }
 
-    const totalPrice = cart.items.reduce((sum, i) => sum + i.productId.price * i.quantity, 0); // חישוב סכום כולל
+    const totalPrice = cart.items.reduce(
+      (sum, i) => sum + i.productId.price * i.quantity,
+      0
+    );
 
     res.render('cart', {
-      title: 'My Cart', // כותרת לעמוד
-      items: cart.items, // מוצרים בעגלה
-      totalPrice // סכום כולל
+      title: 'My Cart',
+      items: cart.items,
+      totalPrice
     });
   } catch (err) {
-    console.error('Error fetching cart:', err.message); // הדפסת שגיאה ל־console
-    res.status(500).send('Failed to fetch cart'); // החזרת שגיאה למשתמש
+    console.error('Error fetching cart:', err.message);
+    res.status(500).send('Failed to fetch cart');
   }
 };
 
-// ❌ מחיקת מוצר מסוים
-const removeItem = async (req, res) => {
+exports.removeItem = async (req, res) => {
   try {
-    const userId = req.user.userId; // מזהה את המשתמש
-    const { productId } = req.params; // מזהה את המוצר למחיקה מהכתובת
+    const userId = req.user.userId;
+    const { productId } = req.params;
 
-    const cart = await Cart.findOne({ userId }); // שליפת עגלת המשתמש
-    if (!cart) return res.status(404).send('Cart not found'); // אם אין עגלה – החזר שגיאה
+    const cart = await Cart.findOne({ userId });
+    if (!cart) return res.status(404).send('Cart not found');
 
-    cart.items = cart.items.filter(i => i.productId.toString() !== productId); // הסרת המוצר מהרשימה
-    await cart.save(); // שמירת שינויים במסד
+    cart.items = cart.items.filter(i => i.productId.toString() !== productId);
+    await cart.save();
 
-    res.redirect('/cart'); // הפניה חזרה לעמוד העגלה
+    res.redirect('/cart');
   } catch (err) {
-    console.error('Error removing item:', err.message); // הדפסת שגיאה
-    res.status(500).send('Failed to remove item'); // שגיאה למשתמש
+    console.error('Error removing item:', err.message);
+    res.status(500).send('Failed to remove item');
   }
 };
 
-// 🗑️ ריקון עגלה
-const clearCart = async (req, res) => {
+exports.clearCart = async (req, res) => {
   try {
-    const userId = req.user.userId; // מזהה את המשתמש
-    await Cart.findOneAndDelete({ userId }); // מחיקת עגלה שלמה מהמסד
-    res.redirect('/cart'); // הפניה חזרה לעמוד העגלה
+    const userId = req.user.userId;
+    await Cart.findOneAndDelete({ userId });
+    res.redirect('/cart');
   } catch (err) {
-    console.error('Error clearing cart:', err.message); // הדפסת שגיאה
-    res.status(500).send('Failed to clear cart'); // החזרת שגיאה למשתמש
+    console.error('Error clearing cart:', err.message);
+    res.status(500).send('Failed to clear cart');
   }
 };
-
-module.exports = { addToCart, getCart, removeItem, clearCart }; // ייצוא כל הפונקציות לשימוש ב־routes
